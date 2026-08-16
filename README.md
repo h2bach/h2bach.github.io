@@ -1,6 +1,6 @@
 # Hoang Huu Bach — Data Engineering & Applied AI
 
-An English portfolio built with Astro and prepared for GitHub Pages. MHPE and BQuant are the two primary projects. BiodiversityVN is supporting systems work.
+An English portfolio built with Astro and published on GitHub Pages. MHPE and BQuant are the two primary projects. BiodiversityVN is supporting systems work.
 
 ## Local development
 
@@ -31,15 +31,19 @@ The generated website is in `dist/`. Serve that folder with an HTTP server; open
 
 ## GitHub Pages
 
-This package has **not been published**. It is configured for the GitHub account `h2bach`.
+Website: **[https://h2bach.github.io/](https://h2bach.github.io/)**. Source repository: [h2bach/h2bach.github.io](https://github.com/h2bach/h2bach.github.io).
 
-1. Create the repository `h2bach.github.io` on that account.
-2. Put **the contents of this portfolio folder** at the repository root, including `.github/`, `pnpm-lock.yaml`, and `pnpm-workspace.yaml`.
-3. In **Settings → Pages**, select **GitHub Actions** as the source.
-4. Push to `main` or manually start the deployment workflow.
-5. Confirm that the deployment succeeds and that the resume PDF downloads at the published URL.
+GitHub Pages uses **GitHub Actions** as its publishing source. The workflow builds and deploys every push to `main`; it can also be started manually from the Actions tab.
 
-The intended account-site address is `https://h2bach.github.io/`.
+After editing the source or replacing the CV, publish updates from this repository:
+
+```powershell
+git add .
+git commit -m "Update portfolio"
+git push
+```
+
+Check the deployment workflow in the Actions tab, then confirm the published pages and CV download.
 
 For a differently named repository, set `PORTFOLIO_BASE` to `/<repository-name>/` during the build and update the workflow environment. Internal links use Astro's configured base.
 
