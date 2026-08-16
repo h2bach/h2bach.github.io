@@ -1,0 +1,8 @@
+---
+import Layout from '../layouts/Layout.astro';
+const base = import.meta.env.BASE_URL;
+---
+<Layout title="Resume & contact | Hoang Huu Bach" active="Resume">
+  <section class="wrap page-intro"><p class="eyebrow">Resume & contact</p><h1>Hoang Huu Bach.</h1><p>Computer Science M.Sc. working across data pipelines, analytics, and machine learning. I bring experience in financial data operations, scientific software, and technical teaching.</p></section>
+  <section class="wrap section resume-grid"><div><h2>Data Engineering & Applied AI</h2><p>My two primary projects reflect complementary skills: MHPE combines sequence modeling and Mixture-of-Experts research; BQuant connects data engineering, quantitative analytics, custom AI agents, and a QAOA portfolio optimization prototype.</p><p>Industry experience includes researcher-driven data preparation, Plotly and Tableau visualization, and Dash delivery. Research and teaching add experimental design, technical writing, and practice explaining programming, algorithms, and statistics.</p><div class="actions"><a class="button" href={`${base}assets/Bach_CV_Analytics.pdf`} download>Download CV · PDF</a><a class="button" href="https://github.com/h2bach">GitHub profile</a></div></div><ul class="resume-facts"><li><span>Email</span><a href="mailto:hhbach01@gmail.com">hhbach01@gmail.com</a></li><li><span>Education</span>M.Sc. Computer Science · UET-VNU</li><li><span>Languages</span>Vietnamese · native<br/>English · IELTS Academic 7.0</li><li><span>Focus</span>Data systems · analytics · applied machine learning</li></ul></section>
+</Layout>

@@ -1,0 +1,28 @@
+---
+import '../styles/global.css';
+const { title = 'Hoang Huu Bach | Data Engineering & Applied AI', description = 'Data engineering and applied machine learning. Explore BQuant, MHPE, and selected systems work by Hoang Huu Bach.', active = '' } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const links = [['Work', 'projects/'], ['Experience', '#experience'], ['Research', 'research/'], ['Resume', 'resume/']];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#142a40" />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="header wrap">
+      <a class="identity" href={base} aria-label="Hoang Huu Bach home"><span class="monogram">HB</span><span>Hoang Huu Bach<small>Data Engineering & Applied AI</small></span></a>
+      <nav aria-label="Main navigation">
+        {links.map(([label, url]) => <a href={`${base}${url}`} aria-current={active === label ? 'page' : undefined}>{label}</a>)}
+      </nav>
+    </header>
+    <main id="main"><slot /></main>
+    <footer class="footer wrap"><div><strong>Hoang Huu Bach</strong><p>Data systems. Clear analysis. Reproducible work.</p></div><div class="footer-links"><a href="mailto:hhbach01@gmail.com">Email</a><a href="https://github.com/h2bach">GitHub</a><a href={`${base}resume/`}>Resume</a></div></footer>
+  </body>
+</html>
