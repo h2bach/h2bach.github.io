@@ -44,7 +44,7 @@ export const projects = [
   {
     slug: 'neoantigen', number: '02', title: 'MHPE', subtitle: 'Neoantigen prediction with Mixture-of-Experts',
     category: 'Applied machine learning / Research', period: 'June 2024–present', role: 'Researcher · model design & evaluation',
-    tags: ['PyTorch', 'BiLSTM', 'Cross-attention', 'Mixture-of-Experts'],
+    tags: ['Bioinformatics', 'Pipeline engineering', 'PyTorch', 'BiLSTM', 'Cross-attention', 'Mixture-of-Experts'],
     summary: 'Research on peptide–HLA prediction using sequence representations and multiple expert groups, reported at ICCBB 2025.',
     facts: [['2025', 'ICCBB publication']], repository: null, publication: 'https://doi.org/10.1145/3789938.3789948',
     question: 'How can a model combine different biological signals when predicting peptide–HLA interactions for neoantigen candidate prioritization?',

@@ -42,7 +42,7 @@ const n = report.constituents.length;
     <section class="report-section">
       <div class="chart-head">
         <div><h2>VN30 versus its 200-day average</h2><p class="chart-sub">Daily close with the market regime underneath. Hover or use arrow keys for values.</p></div>
-        <div class="range" role="group" aria-label="Time range"><button type="button" data-range="252">1Y</button><button type="button" data-range="756" aria-pressed="true">3Y</button><button type="button" data-range="all">All</button></div>
+        <div class="range" id="index-range" role="group" aria-label="Time range"><button type="button" data-range="252">1Y</button><button type="button" data-range="756" aria-pressed="true">3Y</button><button type="button" data-range="all">All</button></div>
       </div>
       <div class="legend" aria-hidden="true"><span><i class="key line s1"></i>VN30 close</span><span><i class="key line ctx"></i>200-day average</span><span><i class="key box bull"></i>Bullish</span><span><i class="key box neutral"></i>Neutral</span><span><i class="key box bear"></i>Bearish</span></div>
       <div class="chart" id="index-chart" tabindex="0" aria-label="Line chart of the VN30 index and its 200-day average with a market regime strip"></div>
@@ -63,9 +63,11 @@ const n = report.constituents.length;
     </div>
 
     <section class="report-section">
-      <h2>Constituent table</h2>
-      <p class="chart-sub">Values at {fmtDate(report.as_of)}. Volatility is annualised from 60 daily log returns. “vs VN30” is the 60-day return minus the VN30 60-day return.</p>
-      <div class="table-wrap"><table class="fact-table data-table">
+      <div class="chart-head">
+        <div><h2>Constituent table</h2><p class="chart-sub">Values at {fmtDate(report.as_of)}, sorted by 60-day return. Volatility is annualised from 60 daily log returns. “vs VN30” is the 60-day return minus the VN30 60-day return.</p></div>
+        <div class="range" id="rows-range" role="group" aria-label="Rows shown"><button type="button" data-rows="10" aria-pressed="true">10</button><button type="button" data-rows="20">20</button><button type="button" data-rows="all">All {n}</button></div>
+      </div>
+      <div class="table-wrap"><table class="fact-table data-table" id="constituent-table">
         <thead><tr><th scope="col">Symbol</th><th scope="col" class="num">Close</th><th scope="col" class="num">20-day</th><th scope="col" class="num">60-day</th><th scope="col" class="num">vs VN30</th><th scope="col" class="num">Volatility</th><th scope="col">Trend</th><th scope="col">Liquidity</th><th scope="col">Row checks</th></tr></thead>
         <tbody>{report.constituents.map((c) => <tr>
           <th scope="row">{c.symbol}</th>
@@ -79,6 +81,7 @@ const n = report.constituents.length;
           <td>{c.row_issues === 0 ? <span class="status good"><span aria-hidden="true">✓</span> 0 issues</span> : <span class="status bad">{c.row_issues} issues</span>}</td>
         </tr>)}</tbody>
       </table></div>
+      <div class="table-foot"><span id="rows-status" aria-live="polite">Showing all {n} constituents</span><button type="button" class="link-button" id="rows-toggle" hidden>Show all {n}</button></div>
     </section>
 
     <section class="report-section method">
@@ -136,6 +139,9 @@ const n = report.constituents.length;
   .tooltip .tt-row b{font-weight:600;font-variant-numeric:tabular-nums}
   .tooltip .tt-key{display:inline-block;width:12px;height:2px;margin-right:6px;vertical-align:middle}
   .data-table{font-size:.875rem}
+  .table-foot{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-size:.875rem;color:var(--muted);margin-top:-8px}
+  .link-button{font:inherit;background:none;border:0;padding:0;color:var(--blue);text-decoration:underline;text-underline-offset:.22em;cursor:pointer}
+  .link-button:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
   .data-table .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
   .data-table th[scope=row]{font-weight:600;background:transparent;color:var(--ink)}
   .data-table td{white-space:nowrap}
@@ -245,8 +251,8 @@ const n = report.constituents.length;
     box.onkeydown = (e) => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); show(cur + (e.key === 'ArrowLeft' ? -1 : 1) * (e.shiftKey ? 20 : 1)); } };
     box.onfocus = () => show(cur); box.onblur = () => { cross.setAttribute('visibility', 'hidden'); dot.setAttribute('visibility', 'hidden'); hideTip(); };
   }
-  document.querySelectorAll('.range button').forEach((b) => b.addEventListener('click', () => {
-    document.querySelectorAll('.range button').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+  document.querySelectorAll('#index-range button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('#index-range button').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
     range = b.dataset.range === 'all' ? 'all' : +b.dataset.range; drawIndex();
   }));
 
@@ -299,6 +305,27 @@ const n = report.constituents.length;
       hitR.addEventListener('pointerenter', on); hitR.addEventListener('pointerleave', off); hitR.addEventListener('focus', on); hitR.addEventListener('blur', off);
     });
   }
+
+  // ---- 4. Constituent table: limit visible rows ----
+  const tableRows = [...document.querySelectorAll('#constituent-table tbody tr')];
+  const rowButtons = [...document.querySelectorAll('#rows-range button')];
+  const rowsStatus = document.getElementById('rows-status');
+  const rowsToggle = document.getElementById('rows-toggle');
+  function setRows(limit) {
+    const total = tableRows.length; const shown = limit === 'all' ? total : Math.min(+limit, total);
+    tableRows.forEach((tr, i) => { tr.hidden = i >= shown; });
+    rowButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.rows === String(limit))));
+    rowsStatus.textContent = shown === total ? `Showing all ${total} constituents` : `Showing top ${shown} of ${total} by 60-day return`;
+    rowsToggle.hidden = false;
+    rowsToggle.textContent = shown === total ? 'Show fewer' : `Show all ${total}`;
+    rowsToggle.dataset.next = shown === total ? '10' : 'all';
+  }
+  rowButtons.forEach((b) => b.addEventListener('click', () => setRows(b.dataset.rows)));
+  rowsToggle.addEventListener('click', () => {
+    const next = rowsToggle.dataset.next; setRows(next);
+    if (next !== 'all') document.getElementById('constituent-table').scrollIntoView({ block: 'nearest' });
+  });
+  setRows('10');
 
   const drawAll = () => { drawIndex(); drawRegime(); drawReturns(); };
   drawAll();
