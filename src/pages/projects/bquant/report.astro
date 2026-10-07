@@ -1,0 +1,306 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import report from '../../../data/bquant_report.json';
+const base = import.meta.env.BASE_URL;
+const k = report.kpi;
+const sign = (x) => (x > 0 ? '+' : x < 0 ? '−' : '');
+const pct = (x, d = 1) => `${sign(x)}${Math.abs(x * 100).toFixed(d)}%`;
+const fmtDate = (s) => new Date(`${s}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const label = (s) => s.replace(/_/g, ' ');
+const n = report.constituents.length;
+---
+<Layout title="VN30 market report | BQuant | Hoang Huu Bach" description="A management-style VN30 market snapshot built from the BQuant dbt marts." active="Work">
+  <section class="wrap page-intro report-intro">
+    <a class="back" href={`${base}projects/bquant/`}>BQuant case study</a>
+    <p class="eyebrow">BQuant · Analytics output</p>
+    <h1>VN30 market report</h1>
+    <p>A management-style descriptive snapshot built entirely from the BQuant dbt marts. Market data through <strong>{fmtDate(report.as_of)}</strong>, the latest load in the warehouse. Returns are price-based and not dividend-adjusted. This is a research summary, not investment advice.</p>
+  </section>
+
+  <div class="wrap">
+    <div class="run-strip" role="note">
+      <span><strong>dbt {report.run.command}</strong> · {fmtDate(report.run.date)}</span>
+      <span>{report.run.models} models · {report.run.tests} data tests</span>
+      <span class="status good"><span aria-hidden="true">✓</span> {report.run.passed}/{report.run.total} passed</span>
+      <span>Market data through {fmtDate(report.as_of)}</span>
+      <a class="text-link" href={`${base}projects/bquant/`}>How the data is built</a>
+    </div>
+
+    <section class="kpi-row" aria-label="Headline figures">
+      <div class="kpi"><p class="kpi-label">VN30 index</p><p class="kpi-value">{k.vn30.toLocaleString('en-US', { minimumFractionDigits: 2 })}</p><p class="kpi-sub">{pct(k.vn30_ret_20d)} over 20 sessions</p></div>
+      <div class="kpi"><p class="kpi-label">VN30 · 252 sessions</p><p class="kpi-value">{pct(k.vn30_ret_1y)}</p><p class="kpi-sub">{pct(k.vn30_vs_sma200)} vs 200-day average</p></div>
+      <div class="kpi"><p class="kpi-label">Market regime</p><p class="kpi-value cap">{label(k.regime)}</p><p class="kpi-sub cap">{label(k.vol_regime)}</p></div>
+      <div class="kpi"><p class="kpi-label">Constituent trends</p><p class="kpi-value">{report.trend_counts.downtrend ?? 0}<span class="kpi-of"> / {n}</span></p><p class="kpi-sub">in downtrend · {report.trend_counts.uptrend ?? 0} in uptrend</p></div>
+      <div class="kpi"><p class="kpi-label">Breadth · 20 sessions</p><p class="kpi-value">{Math.round(k.adv_ratio_20d * 100)}%</p><p class="kpi-sub">average share of risers per day</p></div>
+    </section>
+
+    <section class="report-section">
+      <h2>Key observations</h2>
+      <ol class="observations">{report.observations.map((o) => <li>{o}</li>)}</ol>
+    </section>
+
+    <section class="report-section">
+      <div class="chart-head">
+        <div><h2>VN30 versus its 200-day average</h2><p class="chart-sub">Daily close with the market regime underneath. Hover or use arrow keys for values.</p></div>
+        <div class="range" role="group" aria-label="Time range"><button type="button" data-range="252">1Y</button><button type="button" data-range="756" aria-pressed="true">3Y</button><button type="button" data-range="all">All</button></div>
+      </div>
+      <div class="legend" aria-hidden="true"><span><i class="key line s1"></i>VN30 close</span><span><i class="key line ctx"></i>200-day average</span><span><i class="key box bull"></i>Bullish</span><span><i class="key box neutral"></i>Neutral</span><span><i class="key box bear"></i>Bearish</span></div>
+      <div class="chart" id="index-chart" tabindex="0" aria-label="Line chart of the VN30 index and its 200-day average with a market regime strip"></div>
+    </section>
+
+    <div class="report-grid">
+      <section class="report-section">
+        <h2>Market regime by year</h2>
+        <p class="chart-sub">Share of trading sessions in each regime. * partial year.</p>
+        <div class="legend" aria-hidden="true"><span><i class="key box bull"></i>Bullish</span><span><i class="key box neutral"></i>Neutral</span><span><i class="key box bear"></i>Bearish</span></div>
+        <div class="chart" id="regime-chart" aria-label="Stacked bar chart of market regime share by year"></div>
+      </section>
+      <section class="report-section">
+        <h2>60-day price return by constituent</h2>
+        <p class="chart-sub">Ranked; the vertical rule marks the VN30 index ({pct(k.vn30_ret_60d)}).</p>
+        <div class="chart" id="returns-chart" aria-label="Diverging bar chart of 60-day returns by constituent"></div>
+      </section>
+    </div>
+
+    <section class="report-section">
+      <h2>Constituent table</h2>
+      <p class="chart-sub">Values at {fmtDate(report.as_of)}. Volatility is annualised from 60 daily log returns. “vs VN30” is the 60-day return minus the VN30 60-day return.</p>
+      <div class="table-wrap"><table class="fact-table data-table">
+        <thead><tr><th scope="col">Symbol</th><th scope="col" class="num">Close</th><th scope="col" class="num">20-day</th><th scope="col" class="num">60-day</th><th scope="col" class="num">vs VN30</th><th scope="col" class="num">Volatility</th><th scope="col">Trend</th><th scope="col">Liquidity</th><th scope="col">Row checks</th></tr></thead>
+        <tbody>{report.constituents.map((c) => <tr>
+          <th scope="row">{c.symbol}</th>
+          <td class="num">{c.close.toLocaleString('en-US', { maximumFractionDigits: 2 })}</td>
+          <td class="num">{pct(c.ret_20d)}</td>
+          <td class="num">{pct(c.ret_60d)}</td>
+          <td class="num">{pct(c.rs_60d)}</td>
+          <td class="num">{(c.vol_60d_ann * 100).toFixed(1)}%</td>
+          <td class="cap">{label(c.trend_state)}</td>
+          <td class="cap">{label(c.liquidity_state).replace(' liquidity', '')}</td>
+          <td>{c.row_issues === 0 ? <span class="status good"><span aria-hidden="true">✓</span> 0 issues</span> : <span class="status bad">{c.row_issues} issues</span>}</td>
+        </tr>)}</tbody>
+      </table></div>
+    </section>
+
+    <section class="report-section method">
+      <h2>Method &amp; definitions</h2>
+      <dl>
+        <div><dt>Source</dt><dd>{report.sources.daily_ohlcv_base.toLocaleString('en-US')} daily OHLCV rows for {report.history_symbols} historical VN30 members and {report.sources.market_index_daily_base.toLocaleString('en-US')} index rows (VNINDEX, VN30) since {fmtDate(report.history_start)}, loaded by Python ETL into DuckDB.</dd></div>
+        <div><dt>Market regime &amp; trend</dt><dd>Rule-based classifications from moving averages of the index and each constituent, with market breadth for the regime.</dd></div>
+        <div><dt>Liquidity</dt><dd>Each constituent's traded value (close × volume) ranked against the rest of the index on the same day.</dd></div>
+        <div><dt>Data quality</dt><dd>Row checks count invalid OHLC bounds, negative volume and duplicate symbol-date keys in the quality mart.</dd></div>
+        <div><dt>Lineage</dt><dd>Every figure comes from the BQuant marts for market regime, symbol features and data quality. <a class="text-link" href={`${base}projects/bquant/`}>See the lineage diagram</a>.</dd></div>
+      </dl>
+    </section>
+  </div>
+
+  <script type="application/json" id="report-data" set:html={JSON.stringify({ index: report.index, years: report.years, constituents: report.constituents.map((c) => ({ s: c.symbol, r: c.ret_60d })), vn30_60d: k.vn30_ret_60d })} />
+  <div class="tooltip" id="tooltip" role="status" aria-live="polite" hidden></div>
+</Layout>
+
+<style is:global>
+  .report-intro{padding-bottom:28px}
+  .run-strip{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;padding:14px 18px;border:1px solid var(--line);background:var(--surface);font-size:.875rem;color:var(--muted)}
+  .run-strip strong{color:var(--ink);font-weight:600}
+  .status{display:inline-flex;gap:6px;align-items:center;font-weight:600;color:var(--ink)}
+  .status span{display:inline-grid;place-content:center;width:18px;height:18px;border-radius:50%;font-size:.7rem;color:#fff}
+  .status.good span{background:#0ca30c}.status.bad{color:#d03b3b}
+  .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin:28px 0 8px}
+  .kpi{background:#fff;padding:18px 20px}
+  .kpi p{margin:0}.kpi-label{font-size:.8125rem;color:var(--muted);letter-spacing:.02em}
+  .kpi-value{font-size:2rem;line-height:1.2;margin-top:6px!important;font-weight:500;letter-spacing:-.02em}
+  .kpi-of{font-size:1rem;color:var(--muted)}
+  .kpi-sub{font-size:.875rem;color:var(--muted);margin-top:4px!important}
+  .cap{text-transform:capitalize}
+  .report-section{padding:34px 0 10px}
+  .report-section h2{font-size:clamp(1.6rem,2.4vw,2.1rem)}
+  .chart-sub{color:var(--muted);font-size:.9375rem;margin:.5em 0 .8em}
+  .observations{margin:18px 0 0;padding-left:22px;display:grid;gap:10px;max-width:860px}
+  .observations li{padding-left:6px}
+  .chart-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+  .range{display:flex;border:1px solid var(--line)}
+  .range button{font:inherit;font-size:.875rem;padding:7px 14px;background:#fff;border:0;border-right:1px solid var(--line);cursor:pointer;color:var(--ink)}
+  .range button:last-child{border-right:0}
+  .range button[aria-pressed=true]{background:var(--dark);color:#fff}
+  .range button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.8125rem;color:var(--muted);margin:6px 0 4px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .key{display:inline-block}.key.line{width:16px;height:2px;border-radius:2px}.key.box{width:11px;height:11px;border-radius:2px}
+  .key.s1{background:#2a78d6}.key.ctx{background:#9a9893}.key.bull{background:#2a78d6}.key.neutral{background:#d6d3cb}.key.bear{background:#e34948}
+  .chart{position:relative;width:100%;min-height:120px}
+  .chart:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
+  .chart svg{display:block;width:100%;height:auto;overflow:visible}
+  .report-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+  .tooltip{position:absolute;z-index:30;pointer-events:none;background:#fff;border:1px solid rgba(11,11,11,.12);box-shadow:0 6px 20px rgba(20,42,64,.12);padding:9px 12px;font-size:.8125rem;line-height:1.45;min-width:150px}
+  .tooltip .tt-date{color:var(--muted);margin-bottom:4px}
+  .tooltip .tt-row{display:flex;align-items:center;gap:8px;justify-content:space-between}
+  .tooltip .tt-row b{font-weight:600;font-variant-numeric:tabular-nums}
+  .tooltip .tt-key{display:inline-block;width:12px;height:2px;margin-right:6px;vertical-align:middle}
+  .data-table{font-size:.875rem}
+  .data-table .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .data-table th[scope=row]{font-weight:600;background:transparent;color:var(--ink)}
+  .data-table td{white-space:nowrap}
+  .method dl{display:grid;grid-template-columns:repeat(2,1fr);gap:18px 40px;margin:18px 0 0}
+  .method dt{font-weight:600;margin-bottom:4px}.method dd{margin:0;color:var(--muted);font-size:.9375rem}
+  .method code{font-size:.8125rem;background:var(--surface);padding:1px 5px}
+  @media(max-width:980px){.kpi-row{grid-template-columns:repeat(2,1fr)}.report-grid{grid-template-columns:1fr;gap:0}}
+  @media(max-width:620px){.kpi-row{grid-template-columns:1fr}.method dl{grid-template-columns:1fr}.kpi-value{font-size:1.7rem}}
+</style>
+
+<script>
+  const NS = 'http://www.w3.org/2000/svg';
+  const C = { s1: '#2a78d6', ctx: '#9a9893', bull: '#2a78d6', neutral: '#d6d3cb', bear: '#e34948', grid: '#e8edf1', axis: '#c9d4de', muted: '#526373', ink: '#182c3f' };
+  const REG = { bullish: C.bull, neutral: C.neutral, bearish: C.bear };
+  const data = JSON.parse(document.getElementById('report-data').textContent);
+  const tip = document.getElementById('tooltip');
+  const el = (name, attrs = {}, parent) => { const n = document.createElementNS(NS, name); for (const [a, v] of Object.entries(attrs)) n.setAttribute(a, v); if (parent) parent.appendChild(n); return n; };
+  const txt = (parent, x, y, s, attrs = {}) => { const t = el('text', { x, y, 'font-size': 12, fill: C.muted, ...attrs }, parent); t.textContent = s; return t; };
+  const sign = (x) => (x > 0 ? '+' : x < 0 ? '−' : '');
+  const pct = (x, d = 1) => `${sign(x)}${Math.abs(x * 100).toFixed(d)}%`;
+  const num = (x) => x.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const fmtDate = (s) => new Date(`${s}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  function niceTicks(lo, hi, count = 5) {
+    const span = hi - lo; const step0 = span / count; const mag = Math.pow(10, Math.floor(Math.log10(step0)));
+    const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => span / s <= count) || 10 * mag;
+    const out = []; for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(+v.toFixed(10)); return out;
+  }
+  function showTip(container, x, y, rows, title) {
+    tip.replaceChildren();
+    if (title) { const d = document.createElement('div'); d.className = 'tt-date'; d.textContent = title; tip.appendChild(d); }
+    for (const r of rows) {
+      const row = document.createElement('div'); row.className = 'tt-row';
+      const l = document.createElement('span'); if (r.color) { const k = document.createElement('i'); k.className = 'tt-key'; k.style.background = r.color; if (r.box) { k.style.height = '10px'; k.style.width = '10px'; k.style.borderRadius = '2px'; } l.appendChild(k); }
+      l.appendChild(document.createTextNode(r.label)); const v = document.createElement('b'); v.textContent = r.value; row.append(l, v); tip.appendChild(row);
+    }
+    tip.hidden = false;
+    const rect = container.getBoundingClientRect(); const tw = tip.offsetWidth; const th = tip.offsetHeight;
+    let left = rect.left + window.scrollX + x + 14; if (left + tw > window.scrollX + document.documentElement.clientWidth - 8) left = rect.left + window.scrollX + x - tw - 14;
+    tip.style.left = `${Math.max(8, left)}px`; tip.style.top = `${rect.top + window.scrollY + Math.max(0, y - th / 2)}px`;
+  }
+  const hideTip = () => { tip.hidden = true; };
+
+  // ---- 1. Index line chart with regime strip ----
+  let range = 756;
+  function drawIndex() {
+    const box = document.getElementById('index-chart'); box.replaceChildren();
+    const W = box.clientWidth; const narrow = W < 560;
+    const m = { t: 14, r: narrow ? 12 : 128, b: 48, l: 48 }; const H = narrow ? 300 : 360; const stripH = 10;
+    const rows = range === 'all' ? data.index : data.index.slice(-range);
+    const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'presentation' }, box);
+    const iw = W - m.l - m.r; const ih = H - m.t - m.b - stripH - 10;
+    const vals = rows.flatMap((r) => [r.vn30, r.sma200].filter((v) => v != null));
+    let lo = Math.min(...vals), hi = Math.max(...vals); const pad = (hi - lo) * 0.06; lo -= pad; hi += pad;
+    const ticks = niceTicks(lo, hi, 5);
+    const x = (i) => m.l + (rows.length === 1 ? 0 : (i / (rows.length - 1)) * iw);
+    const y = (v) => m.t + ih - ((v - lo) / (hi - lo)) * ih;
+    for (const t of ticks) { if (t < lo || t > hi) continue; el('line', { x1: m.l, x2: m.l + iw, y1: y(t), y2: y(t), stroke: C.grid, 'stroke-width': 1 }, svg); txt(svg, m.l - 8, y(t) + 4, t.toLocaleString('en-US'), { 'text-anchor': 'end', 'font-variant-numeric': 'tabular-nums' }); }
+    // x ticks: year starts (or quarter starts for 1Y)
+    let lastKey = null;
+    rows.forEach((r, i) => {
+      const yr = r.d.slice(0, 4); const q = Math.floor((+r.d.slice(5, 7) - 1) / 3);
+      const key = range === 252 ? `${yr}-${q}` : yr;
+      if (key !== lastKey && i > 0) {
+        const label = range === 252 ? new Date(`${r.d}T00:00:00Z`).toLocaleDateString('en-GB', { month: 'short', year: '2-digit', timeZone: 'UTC' }) : yr;
+        if (!(range === 'all' && narrow && +yr % 2)) txt(svg, x(i), H - 8, label, { 'text-anchor': 'middle' });
+        el('line', { x1: x(i), x2: x(i), y1: m.t + ih + 14 + stripH, y2: m.t + ih + 18 + stripH, stroke: C.axis }, svg);
+      }
+      lastKey = key;
+    });
+    // regime strip
+    const sy = m.t + ih + 8; const bw = iw / rows.length;
+    let start = 0;
+    for (let i = 1; i <= rows.length; i++) {
+      if (i === rows.length || rows[i].regime !== rows[start].regime) {
+        el('rect', { x: m.l + start * bw, y: sy, width: Math.max(0.5, (i - start) * bw), height: stripH, fill: REG[rows[start].regime] }, svg); start = i;
+      }
+    }
+    const path = (key) => { let d = ''; let pen = false; rows.forEach((r, i) => { const v = r[key]; if (v == null) { pen = false; return; } d += `${pen ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`; pen = true; }); return d; };
+    el('path', { d: path('sma200'), fill: 'none', stroke: C.ctx, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+    el('path', { d: path('vn30'), fill: 'none', stroke: C.s1, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+    const lastR = rows[rows.length - 1]; const li = rows.length - 1;
+    el('circle', { cx: x(li), cy: y(lastR.vn30), r: 4, fill: C.s1, stroke: '#fff', 'stroke-width': 2 }, svg);
+    if (!narrow) {
+      let y1 = y(lastR.vn30), y2 = y(lastR.sma200);
+      if (Math.abs(y1 - y2) < 30) { const mid = (y1 + y2) / 2; const up = y1 < y2; y1 = mid + (up ? -15 : 15); y2 = mid + (up ? 15 : -15); }
+      txt(svg, x(li) + 10, y1 - 2, 'VN30', { fill: C.ink, 'font-weight': 600 }); txt(svg, x(li) + 10, y1 + 12, num(lastR.vn30), { 'font-variant-numeric': 'tabular-nums' });
+      txt(svg, x(li) + 10, y2 - 2, '200-day avg', { fill: C.ink, 'font-weight': 600 }); txt(svg, x(li) + 10, y2 + 12, num(lastR.sma200), { 'font-variant-numeric': 'tabular-nums' });
+    }
+    // crosshair
+    const cross = el('line', { y1: m.t, y2: sy + stripH, stroke: C.muted, 'stroke-width': 1, visibility: 'hidden' }, svg);
+    const dot = el('circle', { r: 4, fill: C.s1, stroke: '#fff', 'stroke-width': 2, visibility: 'hidden' }, svg);
+    const hit = el('rect', { x: m.l, y: m.t, width: iw, height: sy + stripH - m.t, fill: 'transparent' }, svg);
+    let cur = li;
+    const show = (i) => {
+      cur = Math.max(0, Math.min(rows.length - 1, i)); const r = rows[cur];
+      cross.setAttribute('x1', x(cur)); cross.setAttribute('x2', x(cur)); cross.setAttribute('visibility', 'visible');
+      dot.setAttribute('cx', x(cur)); dot.setAttribute('cy', y(r.vn30)); dot.setAttribute('visibility', 'visible');
+      const out = [{ label: 'VN30', value: num(r.vn30), color: C.s1 }];
+      if (r.sma200 != null) out.push({ label: '200-day avg', value: num(r.sma200), color: C.ctx });
+      out.push({ label: 'Regime', value: cap(r.regime), color: REG[r.regime], box: true });
+      showTip(box, x(cur) * (box.clientWidth / W), y(r.vn30) * (box.clientWidth / W), out, fmtDate(r.d));
+    };
+    const toIndex = (evt) => { const rect = svg.getBoundingClientRect(); const px = (evt.clientX - rect.left) * (W / rect.width); return Math.round(((px - m.l) / iw) * (rows.length - 1)); };
+    hit.addEventListener('pointermove', (e) => show(toIndex(e)));
+    hit.addEventListener('pointerleave', () => { cross.setAttribute('visibility', 'hidden'); dot.setAttribute('visibility', 'hidden'); hideTip(); });
+    box.onkeydown = (e) => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); show(cur + (e.key === 'ArrowLeft' ? -1 : 1) * (e.shiftKey ? 20 : 1)); } };
+    box.onfocus = () => show(cur); box.onblur = () => { cross.setAttribute('visibility', 'hidden'); dot.setAttribute('visibility', 'hidden'); hideTip(); };
+  }
+  document.querySelectorAll('.range button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.range button').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+    range = b.dataset.range === 'all' ? 'all' : +b.dataset.range; drawIndex();
+  }));
+
+  // ---- 2. Regime share by year (100% stacked horizontal bars) ----
+  function drawRegime() {
+    const box = document.getElementById('regime-chart'); box.replaceChildren();
+    const W = box.clientWidth; const rowH = 26, barH = 16; const m = { t: 4, r: 4, b: 4, l: 52 };
+    const H = m.t + m.b + data.years.length * rowH; const iw = W - m.l - m.r;
+    const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'presentation' }, box);
+    data.years.forEach((yr, i) => {
+      const total = yr.bullish + yr.neutral + yr.bearish; const partial = yr.first_d.slice(5) > '01-10' || yr.last_d.slice(5) < '12-20';
+      const cy = m.t + i * rowH + (rowH - barH) / 2;
+      txt(svg, m.l - 10, cy + barH / 2 + 4, `${yr.year}${partial ? '*' : ''}`, { 'text-anchor': 'end', 'font-variant-numeric': 'tabular-nums' });
+      let xx = m.l; const segs = [['bullish', yr.bullish], ['neutral', yr.neutral], ['bearish', yr.bearish]].filter((s) => s[1] > 0);
+      segs.forEach(([key, days], j) => {
+        const w = (days / total) * iw - (j < segs.length - 1 ? 2 : 0);
+        const r = el('rect', { x: xx, y: cy, width: Math.max(1, w), height: barH, fill: REG[key], rx: 2 }, svg);
+        const share = days / total;
+        if (w > 38) txt(svg, xx + w / 2, cy + barH / 2 + 4, `${Math.round(share * 100)}%`, { 'text-anchor': 'middle', fill: key === 'neutral' ? C.ink : '#fff', 'font-size': 11, 'font-weight': 600, 'pointer-events': 'none' });
+        const hitR = el('rect', { x: xx, y: cy - 4, width: Math.max(8, w + 2), height: barH + 8, fill: 'transparent', tabindex: 0 }, svg);
+        const on = () => { r.setAttribute('opacity', '0.8'); showTip(box, (xx + w / 2) * (box.clientWidth / W), cy * (box.clientWidth / W), [{ label: cap(key), value: `${days} sessions`, color: REG[key], box: true }, { label: 'Share', value: `${(share * 100).toFixed(1)}%` }], String(yr.year)); };
+        const off = () => { r.removeAttribute('opacity'); hideTip(); };
+        hitR.addEventListener('pointerenter', on); hitR.addEventListener('pointerleave', off); hitR.addEventListener('focus', on); hitR.addEventListener('blur', off);
+        xx += w + 2;
+      });
+    });
+  }
+
+  // ---- 3. Diverging bars: 60-day return by constituent ----
+  function drawReturns() {
+    const box = document.getElementById('returns-chart'); box.replaceChildren();
+    const W = box.clientWidth; const rowH = 22, barH = 13; const m = { t: 18, r: 46, b: 4, l: 46 };
+    const rows = data.constituents; const H = m.t + m.b + rows.length * rowH; const iw = W - m.l - m.r;
+    const ext = Math.max(...rows.map((r) => Math.abs(r.r))) * 1.05; const x = (v) => m.l + ((v + ext) / (2 * ext)) * iw;
+    const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'presentation' }, box);
+    el('line', { x1: x(0), x2: x(0), y1: m.t - 6, y2: H - m.b, stroke: C.axis, 'stroke-width': 1 }, svg);
+    const vx = x(data.vn30_60d); el('line', { x1: vx, x2: vx, y1: m.t - 6, y2: H - m.b, stroke: C.muted, 'stroke-width': 1 }, svg);
+    txt(svg, vx, m.t - 8, `VN30 ${pct(data.vn30_60d)}`, { 'text-anchor': 'middle', 'font-size': 11 });
+    rows.forEach((r, i) => {
+      const cy = m.t + i * rowH + (rowH - barH) / 2; const pos = r.r >= 0; const x0 = x(0), x1 = x(r.r);
+      const w = Math.abs(x1 - x0); const rad = Math.min(4, w);
+      const d = pos ? `M${x0},${cy}H${x1 - rad}Q${x1},${cy} ${x1},${cy + rad}V${cy + barH - rad}Q${x1},${cy + barH} ${x1 - rad},${cy + barH}H${x0}Z`
+                    : `M${x0},${cy}H${x1 + rad}Q${x1},${cy} ${x1},${cy + rad}V${cy + barH - rad}Q${x1},${cy + barH} ${x1 + rad},${cy + barH}H${x0}Z`;
+      const bar = el('path', { d, fill: pos ? C.bull : C.bear }, svg);
+      txt(svg, pos ? x0 - 6 : x0 + 6, cy + barH / 2 + 4, r.s, { 'text-anchor': pos ? 'end' : 'start', fill: C.ink, 'font-size': 11.5, 'font-weight': 600, stroke: '#fff', 'stroke-width': 4, 'paint-order': 'stroke', 'stroke-linejoin': 'round' });
+      txt(svg, pos ? x1 + 5 : x1 - 5, cy + barH / 2 + 4, pct(r.r), { 'text-anchor': pos ? 'start' : 'end', 'font-size': 11, 'font-variant-numeric': 'tabular-nums', stroke: '#fff', 'stroke-width': 4, 'paint-order': 'stroke', 'stroke-linejoin': 'round' });
+      const hitR = el('rect', { x: m.l - 40, y: cy - 4, width: iw + 80, height: barH + 8, fill: 'transparent', tabindex: 0 }, svg);
+      const on = () => { bar.setAttribute('opacity', '0.8'); showTip(box, x1 * (box.clientWidth / W), cy * (box.clientWidth / W), [{ label: '60-day return', value: pct(r.r), color: pos ? C.bull : C.bear, box: true }, { label: 'vs VN30', value: pct(r.r - data.vn30_60d) }], r.s); };
+      const off = () => { bar.removeAttribute('opacity'); hideTip(); };
+      hitR.addEventListener('pointerenter', on); hitR.addEventListener('pointerleave', off); hitR.addEventListener('focus', on); hitR.addEventListener('blur', off);
+    });
+  }
+
+  const drawAll = () => { drawIndex(); drawRegime(); drawReturns(); };
+  drawAll();
+  let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawAll, 120); });
+</script>

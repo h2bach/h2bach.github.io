@@ -1,0 +1,82 @@
+<svg viewBox="0 0 1100 344" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="lin-t lin-d" style="width:100%;height:auto;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif">
+<title id="lin-t">BQuant dbt lineage</title>
+<desc id="lin-d">6 warehouse sources feed 5 staging, 6 intermediate and 5 mart models.</desc>
+<text x="12" y="24" font-size="13" font-weight="600" letter-spacing="1.2" fill="#376faf">SOURCES (DUCKDB)</text>
+<text x="287" y="24" font-size="13" font-weight="600" letter-spacing="1.2" fill="#376faf">STAGING · 5</text>
+<text x="562" y="24" font-size="13" font-weight="600" letter-spacing="1.2" fill="#376faf">INTERMEDIATE · 6</text>
+<text x="837" y="24" font-size="13" font-weight="600" letter-spacing="1.2" fill="#376faf">MARTS · 5</text>
+<path d="M523,97 C542,97 542,121 562,121" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M523,97 C542,97 542,169 562,169" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M523,97 C542,97 542,73 562,73" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M523,241 C542,241 542,313 562,313" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M523,193 C542,193 542,265 562,265" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M523,97 C542,97 542,217 562,217" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M523,241 C542,241 542,217 562,217" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M523,193 C542,193 542,217 562,217" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M523,145 C542,145 542,217 562,217" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M523,289 C680,289 680,145 837,145" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M523,97 C680,97 680,145 837,145" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M798,217 C818,217 818,145 837,145" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M798,121 C818,121 818,289 837,289" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M798,169 C818,169 818,289 837,289" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M798,313 C818,313 818,289 837,289" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M523,289 C680,289 680,289 837,289" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M798,313 C818,313 818,193 837,193" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M798,73 C818,73 818,193 837,193" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M523,97 C680,97 680,241 837,241" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M798,313 C818,313 818,241 837,241" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M1073,289 C955,289 955,97 837,97" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M1073,193 C955,193 955,97 837,97" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M1073,145 C955,145 955,97 837,97" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M1073,241 C955,241 955,97 837,97" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M248,73 C268,73 268,97 287,97" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M248,265 C268,265 268,241 287,241" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M248,121 C268,121 268,145 287,145" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M248,313 C268,313 268,289 287,289" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M248,169 C268,169 268,193 287,193" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<path d="M248,217 C268,217 268,193 287,193" fill="none" stroke="#9fb3c6" stroke-width="1.2"/>
+<rect x="12" y="56" width="236" height="34" rx="3" fill="#f3f6f9" stroke="#c9d4de" stroke-width="1.2"/>
+<text x="24" y="78" font-size="12.5" fill="#526373" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">daily_ohlcv_base</text>
+<rect x="12" y="104" width="236" height="34" rx="3" fill="#f3f6f9" stroke="#c9d4de" stroke-width="1.2"/>
+<text x="24" y="126" font-size="12.5" fill="#526373" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">data_file_manifest</text>
+<rect x="12" y="152" width="236" height="34" rx="3" fill="#f3f6f9" stroke="#c9d4de" stroke-width="1.2"/>
+<text x="24" y="174" font-size="12.5" fill="#526373" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">intraday_ohlcv_15m_base</text>
+<rect x="12" y="200" width="236" height="34" rx="3" fill="#f3f6f9" stroke="#c9d4de" stroke-width="1.2"/>
+<text x="24" y="222" font-size="12.5" fill="#526373" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">intraday_ohlcv_15m_delta</text>
+<rect x="12" y="248" width="236" height="34" rx="3" fill="#f3f6f9" stroke="#c9d4de" stroke-width="1.2"/>
+<text x="24" y="270" font-size="12.5" fill="#526373" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">market_index_daily_base</text>
+<rect x="12" y="296" width="236" height="34" rx="3" fill="#f3f6f9" stroke="#c9d4de" stroke-width="1.2"/>
+<text x="24" y="318" font-size="12.5" fill="#526373" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">universe_members</text>
+<rect x="287" y="80" width="236" height="34" rx="3" fill="#ffffff" stroke="#376faf" stroke-width="1.2"/>
+<text x="299" y="102" font-size="12.5" fill="#182c3f" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">stg_daily_ohlcv</text>
+<rect x="287" y="128" width="236" height="34" rx="3" fill="#ffffff" stroke="#376faf" stroke-width="1.2"/>
+<text x="299" y="150" font-size="12.5" fill="#182c3f" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">stg_data_file_manifest</text>
+<rect x="287" y="176" width="236" height="34" rx="3" fill="#ffffff" stroke="#376faf" stroke-width="1.2"/>
+<text x="299" y="198" font-size="12.5" fill="#182c3f" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">stg_intraday_15m</text>
+<rect x="287" y="224" width="236" height="34" rx="3" fill="#ffffff" stroke="#376faf" stroke-width="1.2"/>
+<text x="299" y="246" font-size="12.5" fill="#182c3f" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">stg_market_index_daily</text>
+<rect x="287" y="272" width="236" height="34" rx="3" fill="#ffffff" stroke="#376faf" stroke-width="1.2"/>
+<text x="299" y="294" font-size="12.5" fill="#182c3f" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">stg_universe_members</text>
+<rect x="562" y="56" width="236" height="34" rx="3" fill="#ffffff" stroke="#376faf" stroke-width="1.2"/>
+<text x="574" y="78" font-size="12.5" fill="#182c3f" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">int_market_breadth_daily</text>
+<rect x="562" y="104" width="236" height="34" rx="3" fill="#ffffff" stroke="#376faf" stroke-width="1.2"/>
+<text x="574" y="126" font-size="12.5" fill="#182c3f" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">int_symbol_daily_returns</text>
+<rect x="562" y="152" width="236" height="34" rx="3" fill="#ffffff" stroke="#376faf" stroke-width="1.2"/>
+<text x="574" y="174" font-size="12.5" fill="#182c3f" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">int_symbol_liquidity_daily</text>
+<rect x="562" y="200" width="236" height="34" rx="3" fill="#ffffff" stroke="#376faf" stroke-width="1.2"/>
+<text x="574" y="222" font-size="12.5" fill="#182c3f" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">int_data_freshness_status</text>
+<rect x="562" y="248" width="236" height="34" rx="3" fill="#ffffff" stroke="#376faf" stroke-width="1.2"/>
+<text x="574" y="270" font-size="12.5" fill="#182c3f" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">int_intraday_daily_summary</text>
+<rect x="562" y="296" width="236" height="34" rx="3" fill="#ffffff" stroke="#376faf" stroke-width="1.2"/>
+<text x="574" y="318" font-size="12.5" fill="#182c3f" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">int_market_index_returns</text>
+<rect x="837" y="80" width="236" height="34" rx="3" fill="#142a40" stroke="#142a40" stroke-width="1.2"/>
+<text x="849" y="102" font-size="12.5" fill="#ffffff" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">mart_agent_context_daily</text>
+<rect x="837" y="128" width="236" height="34" rx="3" fill="#142a40" stroke="#142a40" stroke-width="1.2"/>
+<text x="849" y="150" font-size="12.5" fill="#ffffff" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">mart_symbol_data_quality</text>
+<rect x="837" y="176" width="236" height="34" rx="3" fill="#142a40" stroke="#142a40" stroke-width="1.2"/>
+<text x="849" y="198" font-size="12.5" fill="#ffffff" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">mart_market_regime_daily</text>
+<rect x="837" y="224" width="236" height="34" rx="3" fill="#142a40" stroke="#142a40" stroke-width="1.2"/>
+<text x="849" y="246" font-size="12.5" fill="#ffffff" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">mart_symbol_ta_signals_daily</text>
+<rect x="837" y="272" width="236" height="34" rx="3" fill="#142a40" stroke="#142a40" stroke-width="1.2"/>
+<text x="849" y="294" font-size="12.5" fill="#ffffff" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">mart_symbol_daily_features</text>
+</svg>

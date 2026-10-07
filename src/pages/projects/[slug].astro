@@ -4,6 +4,7 @@ import { projects } from '../../data/projects.js';
 export function getStaticPaths() { return projects.map(project => ({ params: { slug: project.slug }, props: { project } })); }
 const { project } = Astro.props;
 const base = import.meta.env.BASE_URL;
+const href = (url, internal) => internal ? `${base}${url}` : url;
 ---
 <Layout title={`${project.title} | Hoang Huu Bach`} description={project.summary} active="Work">
   <section class="wrap page-intro"><a class="back" href={`${base}projects/`}>Selected work</a><p class="eyebrow">{project.category}</p><h1>{project.title}</h1><p>{project.subtitle}. {project.summary}</p></section>
@@ -11,13 +12,33 @@ const base = import.meta.env.BASE_URL;
     <aside class="case-aside" aria-label="Project context">
       <div class="block"><p class="label">Period</p>{project.period}<p class="label">My role</p>{project.role}</div>
       <div class="block"><p class="label">Technology</p><ul>{project.tags.map(tag => <li>{tag}</li>)}</ul></div>
-      <div class="block">{project.repository && <a class="text-link" href={project.repository}>Repository</a>}{project.publication && <a class="text-link" href={project.publication}>Publication</a>}<p><a class="text-link" href={`${base}resume/`}>Resume</a></p></div>
+      <div class="block">{project.report && <p><a class="text-link" href={`${base}${project.report}`}>VN30 market report</a></p>}{project.repository && <p><a class="text-link" href={project.repository}>Repository</a></p>}{project.publication && <p><a class="text-link" href={project.publication}>Publication</a></p>}<p><a class="text-link" href={`${base}resume/`}>Resume</a></p></div>
     </aside>
     <article class="case-content">
+      {project.glance && <section class="glance" aria-label="At a glance"><p class="eyebrow">At a glance</p><ul>{project.glance.map(item => <li>{item}</li>)}</ul>{project.facts.length > 0 && <div class="evidence-strip">{project.facts.map(([value, label]) => <span><strong>{value}</strong> {label}</span>)}</div>}</section>}
       <h2>The question</h2><p>{project.question}</p>
       <h3>My contribution</h3><p>{project.contribution}</p>
       <div class="flow" aria-label="Implemented architecture">{project.flow.map(([title, detail]) => <div><strong>{title}</strong><small>{detail}</small></div>)}</div>
-      {project.sections.map(section => <section><h2>{section.heading}</h2><p>{section.text}</p>{section.bullets && <ul>{section.bullets.map(bullet => <li>{bullet}</li>)}</ul>}{section.table && <div class="table-wrap"><table class="fact-table"><thead><tr>{section.table[0].map(cell => <th scope="col">{cell}</th>)}</tr></thead><tbody>{section.table.slice(1).map(row => <tr>{row.map(cell => <td>{cell}</td>)}</tr>)}</tbody></table></div>}</section>)}
+      {project.sections.map(section => <section><h2>{section.heading}</h2><p>{section.text}</p>
+        {section.svg && <figure class="lineage"><Fragment set:html={section.svg} /></figure>}
+        {section.code && <pre class="code"><code>{section.code}</code></pre>}
+        {section.bullets && <ul>{section.bullets.map(bullet => <li>{bullet}</li>)}</ul>}
+        {section.table && <div class="table-wrap"><table class="fact-table"><thead><tr>{section.table[0].map(cell => <th scope="col">{cell}</th>)}</tr></thead><tbody>{section.table.slice(1).map(row => <tr>{row.map(cell => <td>{cell}</td>)}</tr>)}</tbody></table></div>}
+        {section.links && <p class="section-links">{section.links.map(([label, url, internal]) => <a class="text-link" href={href(url, internal)}>{label}</a>)}</p>}
+      </section>)}
     </article>
   </div>
 </Layout>
+
+<style is:global>
+  .case-content,.case-aside{min-width:0}
+  .glance{border:1px solid var(--line);background:var(--surface);padding:22px 24px;margin-bottom:34px}
+  .glance .eyebrow{margin-bottom:10px}
+  .glance ul{margin:0;padding-left:20px;display:grid;gap:6px}
+  .glance .evidence-strip{margin-top:16px}
+  .lineage{margin:18px 0 6px;padding:16px;border:1px solid var(--line);overflow-x:auto}
+  .lineage svg{min-width:720px}
+  .code{background:#142a40;color:#e6edf4;padding:18px 20px;overflow-x:auto;font-size:.8125rem;line-height:1.6;margin:16px 0}
+  .code code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .section-links{display:flex;gap:22px;flex-wrap:wrap}
+</style>
