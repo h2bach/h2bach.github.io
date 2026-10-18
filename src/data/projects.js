@@ -3,7 +3,7 @@ import lineageSvg from '../assets/bquant-lineage.svg?raw';
 export const projects = [
   {
     slug: 'bquant', number: '01', title: 'BQuant', subtitle: 'Data analytics, agentic AI & portfolio optimization',
-    category: 'Data engineering & applied AI / Personal project', period: '2025–present', role: 'Developer · ongoing personal project',
+    category: 'Data analytics & applied AI / Personal project', period: '2025–present', role: 'Developer · ongoing personal project',
     tags: ['Python', 'SQL / dbt', 'DuckDB', 'Agentic AI', 'Qiskit / QAOA'],
     summary: 'A Vietnamese equity research platform combining reliable market data, quantitative trading signals, agentic analysis, and a QAOA-based portfolio optimization prototype.',
     facts: [['16', 'dbt models'], ['79', 'data tests'], ['95/95', 'dbt build passing']],
@@ -60,7 +60,7 @@ export const projects = [
   }
 ];
 
-// Two equally featured projects: applied ML and data engineering.
+// Two equally featured projects: applied ML and market analytics.
 export const primaryProjects = ['neoantigen', 'bquant'].map(slug => projects.find(project => project.slug === slug));
 export const supportingProjects = projects.filter(project => !primaryProjects.includes(project));
 
