@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-const { title = 'Hoang Huu Bach | Data Engineering & Applied AI', description = 'Data engineering and applied machine learning. Explore BQuant, MHPE, and selected systems work by Hoang Huu Bach.', active = '' } = Astro.props;
+const { title = 'Hoang Huu Bach | Data Analytics & Applied AI', description = 'Data analytics and applied machine learning. Explore BQuant, MHPE, and selected work by Hoang Huu Bach.', active = '' } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const links = [['Work', 'projects/'], ['Experience', '#experience'], ['Research', 'research/'], ['Resume', 'resume/']];
 ---
@@ -17,7 +17,7 @@ const links = [['Work', 'projects/'], ['Experience', '#experience'], ['Research'
   <body>
     <a class="skip" href="#main">Skip to content</a>
     <header class="header wrap">
-      <a class="identity" href={base} aria-label="Hoang Huu Bach home"><span class="monogram">HB</span><span>Hoang Huu Bach<small>Data Engineering & Applied AI</small></span></a>
+      <a class="identity" href={base} aria-label="Hoang Huu Bach home"><span class="monogram">HB</span><span>Hoang Huu Bach<small>Data Analytics &amp; Applied AI</small></span></a>
       <nav aria-label="Main navigation">
         {links.map(([label, url]) => <a href={`${base}${url}`} aria-current={active === label ? 'page' : undefined}>{label}</a>)}
       </nav>
