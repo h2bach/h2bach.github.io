@@ -31,7 +31,7 @@ const base = import.meta.env.BASE_URL;
   </section>
   <section class="surface" id="experience"><div class="wrap section experience-grid">
     <div class="experience-intro"><p class="eyebrow">Experience</p><h2>Data work in context.</h2><p>Industry data operations, research engineering, and teaching experience built on a Computer Science foundation.</p><a class="text-link" href={`${base}resume/`}>Full resume</a></div>
-    <div>{experience.map(item => <article class="timeline-item"><time>{item.date}</time><div><h3>{item.title}</h3><p class="company">{item.company}</p><p>{item.text}</p></div></article>)}</div>
+    <div>{experience.map(item => <article class="timeline-item"><time>{item.date}</time><div><h3>{item.title}</h3><p class="company">{item.company}</p>{[].concat(item.text).map((t, i) => <p class={i > 0 ? 'detail' : undefined}>{t}</p>)}</div></article>)}</div>
   </div></section>
   <section class="wrap section research-grid">
     <div><p class="eyebrow">Research & machine learning</p><h2>Technical depth, grounded in experiments.</h2><p>My research explores biological sequence modeling, phylogenetic optimization, allocation algorithms, and anomaly detection.</p><p>MHPE combines BiLSTM, peptide–HLA cross-attention, and Mixture-of-Experts modeling for neoantigen prediction.</p><a class="text-link" href={`${base}research/`}>Research & publications</a></div>
