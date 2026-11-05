@@ -65,8 +65,8 @@ export const primaryProjects = ['neoantigen', 'bquant'].map(slug => projects.fin
 export const supportingProjects = projects.filter(project => !primaryProjects.includes(project));
 
 export const experience = [
-  { date: 'Oct 2026–present', title: 'Lecturer', company: 'PTIT · Faculty of Information Technology 1', text: 'Lecturer in the Department of Software Engineering, Posts and Telecommunications Institute of Technology.' },
-  { date: 'Aug 2023–Sep 2026', title: 'Research Assistant & Teaching Assistant', company: 'UET · Vietnam National University', text: 'Machine-learning research in cancer genomics and neoantigen discovery. Teaching support in programming, algorithms, computational thinking, probability, and statistics.' },
+  { date: 'Oct 2026–present', title: 'Lecturer', company: 'PTIT · Faculty of Information Technology 1', text: 'Lecturer in the Department of Software Engineering, Posts and Telecommunications Institute of Technology. Machine-learning research in cancer genomics and neoantigen discovery. Natural language processing and model optimization & quantization.' },
+  { date: 'Aug 2023–Sep 2026', title: 'Research Assistant & Teaching Assistant', company: 'UET · Vietnam National University', text: 'Machine-learning research in cancer genomics and neoantigen discovery. Teaching programming, algorithms, computational thinking, probability, and statistics.' },
   { date: 'Feb–Aug 2024', title: 'Data Crawling Collaborator', company: 'LEXENGINE', text: 'Crawled Vietnamese legal documents for LEXCentra and worked with document properties and word2vec-based classification.' },
   { date: 'Oct 2023–Feb 2024', title: 'Data Operations Intern', company: 'Singapore-based hedge fund', text: 'Extracted and prepared data with Python and SQL for researchers, built Plotly and Tableau visualizations, and deployed a Dash dashboard for research outputs.' },
   { date: 'Jun–Nov 2023', title: 'Technical Support Specialist', company: 'Synodus JSC.', text: 'Supported platform users, troubleshooting reported problems and escalating technical issues to developers.' },
